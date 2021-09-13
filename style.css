@@ -1,0 +1,24 @@
+body{
+    margin: 70px 0;
+    font-size: 20px;
+    text-align: center;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+input{
+    border: 1px solid crimson;
+    padding: 1em;
+    width: 18em;
+    border-radius: 10px;
+}
+input:focus{
+    outline: none;
+}
+#btn-submit{
+    margin: 1em 0;
+    padding: 0.5em 1em;
+    background: crimson;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: large;
+}
