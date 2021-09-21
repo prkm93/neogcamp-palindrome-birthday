@@ -1,13 +1,13 @@
 const btnSubmit = document.querySelector("#btn-submit");
 const birthday = document.querySelector('#birthday');
 const output = document.querySelector('#output');
-
+var input = { day: 1, month: 1, year: 2020 };
 
 function checkPalindromeForAllDateFormats(date) {
 
     //getting list of date formats for checking palindrome
     const dates = getDateInAllFormats(date);
-    // console.log(dates); 
+    console.log(dates); 
 
     // checking for palindromes
     return dates.some(date => isPalindrome(date))
@@ -53,26 +53,34 @@ function dateToStringConverter(date) {
     }
 }
 
+function DateStringToNumberConverter(date) {
+    return {
+        day: Number(date.day),
+        month: Number(date.month),
+        year: Number(date.year)
+    }
+}
+
 function isPalindrome(str) {
     return str === str.split("").reverse().join("")
 }
 
-var input = { day: 11, month: 11, year: 2021 };
-
-console.log(dateToStringConverter(input));
-
 function getNextDate(date) {
+
+
     let day = date.day + 1;
     let month = date.month;
     let year = date.year;
 
-    const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; //0-11
 
-    if (month === 2) { // check for February
+    // check for February
+    if (month === 2) { 
+        // check for leap year
         if (isLeapYear(year)) {
             if (day > 29) {
                 day = 1;
-                month++;
+                month++; 
             }
         } else {
             if (day > 28) {
@@ -88,6 +96,7 @@ function getNextDate(date) {
         }
     }
 
+    // increment the year if month is greater than 12
     if (month > 12) {
         month = 1;
         year++;
@@ -115,7 +124,9 @@ function isLeapYear(year) {
 
 function getNextPalindromeDate(date) {
     let counter = 0;
-    let nextDate = getNextDate(date);
+    console.log("date", date);
+    let convertedDate = DateStringToNumberConverter(date);
+    let nextDate = getNextDate(convertedDate);
     console.log("nextDate", nextDate);
     
     while(1){
@@ -123,10 +134,9 @@ function getNextPalindromeDate(date) {
         let result = checkPalindromeForAllDateFormats(nextDate);
         console.log(result);
         if (result) {
-            // return [counter]
             break;
         }
-        nextDate = getNextDate(nextDate);
+        nextDate = getNextDate(DateStringToNumberConverter(nextDate));
         console.log("loop", nextDate);
     }
     console.log(counter, nextDate);
@@ -136,6 +146,66 @@ function getNextPalindromeDate(date) {
 // 24-05-2021
 // console.log(getNextPalindromeDate(getNextDate(input)));
 // checkPalindromeForAllDateFormats();
+
+function getPreviousDate(date) {
+    let day = date.day - 1;
+    let month = date.month;
+    let year = date.year;
+    const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    if (month === 3  && day < 1) {
+        if (isLeapYear(year)){
+            month = month - 1;
+            day = daysInMonths[month -1] + 1;
+        } else {
+            month = month - 1;
+            day = daysInMonths[month -1];
+        }
+    } else if (day < 1 && month === 1) {
+        month = 12;
+        day = daysInMonths[month - 1];
+        year--;
+    } else if (day < 1 && month > 1) {
+        month = month - 1;
+        day = daysInMonths[month -1];
+    } 
+    return {
+        day,
+        month,
+        year
+    }
+}
+
+/**
+ * if(day < 1 && month === 1), 
+ *  month = 12;
+ *  day = daysInMonth[month-1]
+ *  year--;
+ * 
+ *  if(day < 1 && month > 1)  
+ *  month = month - 1,
+ *  day = daysInMonth[month - 1]
+ *  
+ */
+getPreviousDate(input);
+
+function getPrevPalindromeDate(date) {
+    let counter = 0;
+    let convertedDate = DateStringToNumberConverter(date);
+    console.log("convertedDate", convertedDate);
+    let prevDate = getPreviousDate(convertedDate);
+    console.log("prevDate", prevDate);
+    while(1){
+        counter++;
+        let result = checkPalindromeForAllDateFormats(prevDate);
+        if (result) {
+            break;
+        }
+        let convertedDate = DateStringToNumberConverter(prevDate);
+        prevDate = getPreviousDate(convertedDate);
+    }
+    console.log(counter, prevDate);
+}
 
 function clickHandler() {
 
@@ -152,7 +222,8 @@ function clickHandler() {
     if (output) {
         console.log(output);
     } else {
-        getNextPalindromeDate(date)
+
+        getPrevPalindromeDate(date)
     }
 }   
 
